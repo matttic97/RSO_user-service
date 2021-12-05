@@ -19,6 +19,15 @@ jobs:
           java-version: 11
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+      - name: Build and push image to dockerhub
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: matic4fri/rso-user-service
+          tags: latest
+          registry: docker.io
+          dockerfile: Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Heroku Container Registry login
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
