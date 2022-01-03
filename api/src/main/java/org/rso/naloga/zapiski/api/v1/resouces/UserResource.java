@@ -63,7 +63,7 @@ public class UserResource {
     }
 
     @PUT
-    @Path("{userId")
+    @Path("{userId}")
     public Response changePassword(@PathParam("userId") int userId, Password passwordInput){
 
         User user = userBean.getUser(userId);
