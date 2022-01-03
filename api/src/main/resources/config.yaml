@@ -9,9 +9,9 @@ kumuluzee:
       port: 8080
   datasources:
     - jndi-name: jdbc/UserMetadataDS
-      connection-url: jdbc:postgresql://abul.db.elephantsql.com/igkywmox
-      username: igkywmox
-      password: 2_pNpLTnwT-R-CVW86Zdc1CCkj5demVV
+      connection-url: jdbc:postgresql://rsobaza.postgres.database.azure.com:5432/postgres
+      username: postgres@rsobaza
+      password: RSOzapiski1
       max-pool-size: 20
   health:
     checks:
