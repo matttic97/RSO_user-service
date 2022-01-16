@@ -62,12 +62,16 @@ public class UserResource {
             )})
     @GET
     @Path("{userId}")
-    public Response getUserById(@PathParam("userId") int userId){
+    public Response getUserById(@PathParam("userId") long userId){
 
         User user = userBean.getUser(userId);
 
         if (user == null){
             return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if(user.getUserId()==-1){
+            return Response.status(500, "Fallback. User does not exist or circuit open.").build();
         }
 
         return Response.status(Response.Status.OK).entity(user).build();
@@ -96,33 +100,55 @@ public class UserResource {
     }
 
 
-    @Operation(description = "Update specified user.", summary = "Update user.")
+    @Operation(description = "Update a users password.", summary = "Update users password.")
     @APIResponses({
             @APIResponse(responseCode = "200",
-                    description = "Updated user",
-                    content = @Content(schema = @Schema(implementation = User.class, type = SchemaType.OBJECT)),
+                    description = "Updated users password",
+                    content = @Content(schema = @Schema(implementation = Password.class, type = SchemaType.OBJECT)),
                     headers = {@Header(name = "X-Total-Count", description = "User")}
             )})
     @PUT
     @Path("{userId}")
-    public Response changePassword(@PathParam("userId") int userId, Password passwordInput){
+    public Response changePassword(@PathParam("userId") long userId, Password passwordInput){
 
         User user = userBean.getUser(userId);
 
-        if (user == null || user.getPassword() != Hash(passwordInput.getOld())){
+        if (user == null || !user.getPassword().equals(Hash(passwordInput.getOldPassword()))){
             return Response.status(Response.Status.BAD_REQUEST).build();
+
         }
 
-        user.setPassword(passwordInput.getNew());
+
+        user.setPassword(passwordInput.getNewPassword());
 
         user = userBean.updateUser(userId, user);
 
-        if (user == null || user.getPassword() != Hash(passwordInput.getOld())){
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-        return Response.status(Response.Status.OK).build();
+        return Response.status(Response.Status.OK).entity(user).build();
     }
+
+    @Operation(description = "Delete a user with given id.", summary = "Delete a user.")
+    @APIResponses({
+            @APIResponse(responseCode = "200",
+                    description = "Delete a user with given id.",
+                    content = @Content(schema = @Schema(implementation = User.class, type = SchemaType.OBJECT)),
+                    headers = {@Header(name = "X-Total-Count", description = "User")}
+            )})
+    @DELETE
+    @Path("{userId}")
+    public Response deleteUser(@PathParam("userId") long userId){
+
+        boolean deleted = userBean.deleteUser(userId);
+
+        if (deleted) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+        else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+
+
 
 
     private String Hash(String value) {

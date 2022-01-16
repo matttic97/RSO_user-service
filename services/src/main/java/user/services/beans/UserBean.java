@@ -3,13 +3,18 @@ package user.services.beans;
 import user.lib.User;
 import user.models.converters.UserConverter;
 import user.models.entities.UserEntity;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -31,17 +36,36 @@ public class UserBean {
 
     }
 
-    public User getUser(Integer id){
-        UserEntity UserEn = em.find(UserEntity.class, id);
+    @Timeout(value = 3, unit = ChronoUnit.SECONDS)
+    @CircuitBreaker(requestVolumeThreshold = 2)
+    @Fallback(fallbackMethod = "getUserFallback")
+    public User getUser(long id){
 
-        if (UserEn == null){
+        if(id==2022){
+            try{
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e){
+                System.out.println("Time error:\n" + e);
+            }
+        }
+
+        UserEntity ow = em.find(UserEntity.class, id);
+
+
+        if (ow == null){
             throw new NotFoundException();
         }
 
-        User u = UserConverter.toDto(UserEn);
+        User u = UserConverter.toDto(ow);
 
         return u;
 
+    }
+
+    public User getUserFallback(long id){
+        User u = new User();
+        u.setUserId((long)-1);
+        return u;
     }
 
     public User createUser(User user){
@@ -65,7 +89,7 @@ public class UserBean {
 
     }
 
-    public User updateUser(int id, User user) {
+    public User updateUser(long id, User user) {
 
         UserEntity UserEn_old = em.find(UserEntity.class, id);
 
@@ -87,6 +111,30 @@ public class UserBean {
 
         return UserConverter.toDto(UserEn_new);
     }
+
+
+
+    public boolean deleteUser(Long id){
+
+        UserEntity user = em.find(UserEntity.class, id);
+
+        if (user != null) {
+            try {
+                beginTx();
+                em.remove(user);
+                commitTx();
+            }
+            catch (Exception e) {
+                rollbackTx();
+            }
+        }
+        else {
+            return false;
+        }
+
+        return true;
+    }
+
 
 
 

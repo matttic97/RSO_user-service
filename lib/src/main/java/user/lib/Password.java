@@ -2,11 +2,11 @@ package user.lib;
 
 public class Password {
 
-    private String oldPass;
-    private String newPass;
+    private String oldPassword;
+    private String newPassword;
 
-    public String getOld() { return this.oldPass; }
-    public String getNew() { return  this.newPass; }
-    public void setOld(String value) { this.oldPass = value; }
-    public void setNew(String value) { this.newPass = value; }
+    public String getOldPassword() { return this.oldPassword; }
+    public String getNewPassword() { return  this.newPassword; }
+    public void setOldPassword(String value) { this.oldPassword = value; }
+    public void setNewPassword(String value) { this.newPassword = value; }
 }
