@@ -4,7 +4,7 @@ kumuluzee:
     name: dev
   version: 1.0.0
   server:
-    base-url: http://104.45.79.50/users
+    base-url: http://104.45.79.50/user
     http:
       port: 8080
   datasources:
@@ -19,14 +19,14 @@ kumuluzee:
         type: liveness
         jndi-name: jdbc/UserMetadataDS
       http-health-check:
-        connection-url: http://104.45.79.50/users/v1/users
+        connection-url: http://104.45.79.50/user/v1/users
   metrics:
     web-instrumentation:
       - name: users-endpoint
         url-pattern: /v1/users/*
   graphql:
     ui:
-      mapping: /myGraphqlUsers
+      mapping: /graphql
       enabled: true
 rest-properties:
   maintenance-mode: false
