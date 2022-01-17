@@ -4,14 +4,14 @@ kumuluzee:
     name: dev
   version: 1.0.0
   server:
-    base-url: http://localhost:8080
+    base-url: http://104.45.79.50/users
     http:
       port: 8080
   datasources:
     - jndi-name: jdbc/UserMetadataDS
-      connection-url: jdbc:postgresql://abul.db.elephantsql.com/igkywmox
-      username: igkywmox
-      password: 2_pNpLTnwT-R-CVW86Zdc1CCkj5demVV
+      connection-url: jdbc:postgresql://rso-literatura.postgres.database.azure.com:5432/postgres
+      username: posgres
+      password: Rs0zap1ski
       max-pool-size: 20
   health:
     checks:
@@ -19,7 +19,7 @@ kumuluzee:
         type: liveness
         jndi-name: jdbc/UserMetadataDS
       http-health-check:
-        connection-url: http://localhost:8080/v1/users
+        connection-url: http://104.45.79.50/users/v1/users
   metrics:
     web-instrumentation:
       - name: users-endpoint
