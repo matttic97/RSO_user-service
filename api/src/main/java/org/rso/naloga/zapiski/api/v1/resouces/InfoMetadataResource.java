@@ -2,6 +2,7 @@ package org.rso.naloga.zapiski.api.v1.resouces;
 
 import com.kumuluz.ee.cors.annotations.CrossOrigin;
 import com.kumuluz.ee.logs.cdi.Log;
+import org.apache.logging.log4j.core.Logger;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.headers.Header;
@@ -15,7 +16,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.logging.Logger;
 
 @Log
 @ApplicationScoped
